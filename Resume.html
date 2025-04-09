@@ -1,0 +1,261 @@
+<!-- SmartResume by Sunny | Final Version with Original Form and Template Designs --><!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartResume by Sunny</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f0f0; margin: 0; padding: 20px; }
+    .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .step { display: none; }
+    .step.active { display: block; }
+    input, textarea, button, select {
+      width: 100%; padding: 10px; margin: 10px 0; font-size: 16px;
+      border-radius: 5px; border: 1px solid #ccc;
+    }
+    .skills-list span, .project-list div {
+      display: inline-block; background: #00796b; color: #fff; margin: 5px; padding: 6px 10px;
+      border-radius: 5px;
+    }
+    .template-options { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+    .template-card { flex: 1 1 200px; padding: 10px; background: #f7f7f7; border: 2px solid #ccc; border-radius: 8px; text-align: center; cursor: pointer; }
+    .template-card:hover { border-color: #00796b; }
+    .btn-nav { display: flex; justify-content: space-between; margin-top: 20px; }
+    h2, h3 { color: #00796b; }
+    #resumePreview { margin-top: 30px; border: 2px dashed #ccc; padding: 20px; background: #fff; border-radius: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>SmartResume by Sunny</h2><!-- Step 1: Contact Info -->
+<div class="step active" id="step1">
+  <h3>Name & Contact</h3>
+  <input type="text" id="name" placeholder="Full Name">
+  <input type="text" id="phone" placeholder="Phone">
+  <input type="email" id="email" placeholder="Email">
+  <input type="text" id="github" placeholder="GitHub">
+  <input type="text" id="linkedin" placeholder="LinkedIn">
+</div>
+
+<!-- Step 2: Education -->
+<div class="step" id="step2">
+  <h3>Education</h3>
+  <strong>SSC:</strong>
+  <input type="text" id="sscSchool" placeholder="School Name">
+  <input type="text" id="sscBoard" placeholder="Board">
+  <input type="text" id="sscYear" placeholder="Year">
+  <input type="text" id="sscMarks" placeholder="Percentage">
+  <strong>HSC:</strong>
+  <input type="text" id="hscCollege" placeholder="College Name">
+  <input type="text" id="hscBoard" placeholder="Board">
+  <input type="text" id="hscYear" placeholder="Year">
+  <input type="text" id="hscMarks" placeholder="Percentage">
+  <strong>Graduation:</strong>
+  <input type="text" id="gradCollege" placeholder="College Name">
+  <input type="text" id="gradDegree" placeholder="Degree">
+  <input type="text" id="gradYear" placeholder="Year">
+  <input type="text" id="gradCgpa" placeholder="CGPA">
+</div>
+
+<!-- Step 3: Objective -->
+<div class="step" id="step3">
+  <h3>Objective</h3>
+  <textarea id="objective" placeholder="Write your career objective..."></textarea>
+</div>
+
+<!-- Step 4: Projects -->
+<div class="step" id="step4">
+  <h3>Projects</h3>
+  <input id="projectTitle" placeholder="Project Title">
+  <textarea id="projectDesc" placeholder="Project Description"></textarea>
+  <button onclick="addProject()">+ Add Project</button>
+  <div id="projectList" class="project-list"></div>
+</div>
+
+<!-- Step 5: Experience -->
+<div class="step" id="step5">
+  <h3>Work Experience</h3>
+  <textarea id="experience" placeholder="Work experience details..."></textarea>
+</div>
+
+<!-- Step 6: Skills -->
+<div class="step" id="step6">
+  <h3>Skills</h3>
+  <input id="skillInput" placeholder="Enter a skill">
+  <button onclick="addSkill()">+ Add Skill</button>
+  <div id="skillsList" class="skills-list"></div>
+</div>
+
+<!-- Navigation Buttons -->
+<div class="btn-nav">
+  <button onclick="prevStep()">Back</button>
+  <button onclick="nextStep()">Next</button>
+</div>
+
+<!-- Step 7: Template Selection -->
+<div class="step" id="step7">
+  <h3>Select Template</h3>
+  <div class="template-options">
+    <div class="template-card" onclick="renderTemplate('classic')">Classic</div>
+    <div class="template-card" onclick="renderTemplate('modern')">Modern</div>
+    <div class="template-card" onclick="renderTemplate('developer')">Developer</div>
+    <div class="template-card" onclick="renderTemplate('elegant')">Elegant</div>
+  </div>
+  <div id="resumePreview"></div>
+  <button onclick="window.print()">Download / Print</button>
+</div>
+
+  </div>  <script>
+    let currentStep = 1;
+    const totalSteps = 7;
+    const skills = [], projects = [];
+
+    function showStep(n) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.getElementById('step' + n).classList.add('active');
+    }
+    function nextStep() { if (currentStep < totalSteps) showStep(++currentStep); }
+    function prevStep() { if (currentStep > 1) showStep(--currentStep); }
+
+    function addSkill() {
+      const val = document.getElementById('skillInput').value.trim();
+      if (val) { skills.push(val); updateList('skillsList', skills); document.getElementById('skillInput').value = ''; }
+    }
+    function addProject() {
+      const title = document.getElementById('projectTitle').value.trim();
+      const desc = document.getElementById('projectDesc').value.trim();
+      if (title && desc) { projects.push({title, desc}); updateProjects(); document.getElementById('projectTitle').value = ''; document.getElementById('projectDesc').value = ''; }
+    }
+    function updateList(id, arr) {
+      const list = document.getElementById(id); list.innerHTML = '';
+      arr.forEach(x => list.innerHTML += `<span>${x}</span>`);
+    }
+    function updateProjects() {
+      const list = document.getElementById('projectList'); list.innerHTML = '';
+      projects.forEach(p => list.innerHTML += `<div><strong>${p.title}</strong><br><em>${p.desc}</em></div>`);
+    }
+
+    function renderTemplate(style) {
+  const valOr = (id, fallback = "Not Provided") => {
+    const el = document.getElementById(id);
+    return el && el.value.trim() !== "" ? el.value.trim() : fallback;
+  };
+
+  const name = valOr('name');
+  const phone = valOr('phone');
+  const email = valOr('email');
+  const github = valOr('github');
+  const linkedin = valOr('linkedin');
+  const objective = valOr('objective');
+  const experience = valOr('experience');
+  const education = [
+    `SSC: ${valOr('sscSchool')}, ${valOr('sscBoard')}, ${valOr('sscYear')}, ${valOr('sscMarks')}%`,
+    `HSC: ${valOr('hscCollege')}, ${valOr('hscBoard')}, ${valOr('hscYear')}, ${valOr('hscMarks')}%`,
+    `Graduation: ${valOr('gradCollege')}, ${valOr('gradDegree')}, ${valOr('gradYear')}, CGPA: ${valOr('gradCgpa')}`
+  ];
+
+  const eduHTML = education.map(e => `<li>${e}</li>`).join('');
+  const projHTML = projects.length > 0 ? projects.map(p => `<li><strong>${p.title}</strong>: ${p.desc}</li>`).join('') : '<li>No Projects Provided</li>';
+  const skillHTML = skills.length > 0 ? skills.map(s => `<li>${s}</li>`).join('') : '<li>No Skills Added</li>';
+
+  let html = '';
+  if (style === 'classic') {
+    html = `
+      <div style="display: flex; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.2); max-width: 900px; margin:auto;">
+        <div style="width: 30%; background: #004d40; color: white; padding: 20px;">
+          <h2 style="border-bottom:1px solid white;">Contact</h2>
+          <p>${name}</p>
+          <p>${phone}</p>
+          <p>${email}</p>
+          <p>${github}</p>
+          <p>${linkedin}</p>
+
+          <h2 style="border-bottom:1px solid white;">Skills</h2>
+          <ul>${skillHTML}</ul>
+
+          <h2 style="border-bottom:1px solid white;">Languages</h2>
+          <p>English</p>
+          <p>Hindi</p>
+        </div>
+
+        <div style="width: 70%; padding: 30px;">
+          <h3 style="border-bottom:1px solid #aaa;">Objective</h3>
+          <p>${objective}</p>
+
+          <h3 style="border-bottom:1px solid #aaa;">Education</h3>
+          <ul>${eduHTML}</ul>
+
+          <h3 style="border-bottom:1px solid #aaa;">Projects</h3>
+          <ul>${projHTML}</ul>
+
+          <h3 style="border-bottom:1px solid #aaa;">Experience</h3>
+          <p>${experience}</p>
+        </div>
+      </div>
+    `;
+  } else if (style === 'modern') {
+    html = `
+      <div style="max-width:900px; margin:auto; background:#fff; border-radius:15px; box-shadow:0 0 20px rgba(0,0,0,0.1); overflow:hidden; font-family:'Segoe UI',sans-serif;">
+        <div style="display:flex; background:#00796b; color:white; padding:20px;">
+          <div style="flex:1">
+            <h1 style="margin:0; font-size:28px;">${name}</h1>
+            <p>${email}</p>
+            <p>${phone}</p>
+          </div>
+          <div style="text-align:right;">
+            <p>${github}</p>
+            <p>${linkedin}</p>
+          </div>
+        </div>
+        <div style="padding:25px;">
+          <h2 style="color:#00796b;">Objective</h2>
+          <p>${objective}</p>
+
+          <h2 style="color:#00796b;">Education</h2>
+          <ul>${eduHTML}</ul>
+
+          <h2 style="color:#00796b;">Projects</h2>
+          <ul>${projHTML}</ul>
+
+          <h2 style="color:#00796b;">Skills</h2>
+          <ul>${skillHTML}</ul>
+
+          <h2 style="color:#00796b;">Experience</h2>
+          <p>${experience}</p>
+        </div>
+      </div>
+    `;
+  } else if (style === 'developer') {
+    html = `
+      <div style="background:#121212; color:#eee; font-family:monospace; padding:30px; max-width:900px; margin:auto; border-radius:10px;">
+        <h1 style="border-bottom:1px solid #444;">${name}</h1>
+        <p>Email: ${email} | Phone: ${phone}</p>
+        <p>GitHub: ${github} | LinkedIn: ${linkedin}</p>
+        <h2>Objective</h2><p>${objective}</p>
+        <h2>Education</h2><ul>${eduHTML}</ul>
+        <h2>Projects</h2><ul>${projHTML}</ul>
+        <h2>Skills</h2><ul>${skillHTML}</ul>
+        <h2>Experience</h2><p>${experience}</p>
+      </div>
+    `;
+  } else if (style === 'elegant') {
+    html = `
+      <div style="max-width:900px; margin:auto; background:#fdfdfd; border:2px solid #555; padding:40px; font-family:'Georgia',serif; border-radius:15px;">
+        <h1 style="text-align:center; font-size:32px; margin-bottom:0;">${name}</h1>
+        <p style="text-align:center; margin-top:5px;">${email} | ${phone} | ${github} | ${linkedin}</p>
+        <hr>
+        <h2>Objective</h2><p>${objective}</p>
+        <h2>Education</h2><ul>${eduHTML}</ul>
+        <h2>Projects</h2><ul>${projHTML}</ul>
+        <h2>Skills</h2><ul>${skillHTML}</ul>
+        <h2>Experience</h2><p>${experience}</p>
+      </div>
+    `;
+  } else {
+    html = `<p style='color:red;'>Only Classic template implemented. Others coming soon.</p>`;
+  }
+
+  document.getElementById('resumePreview').innerHTML = html;
+}
+    showStep(currentStep);
+  </script></body>
+</html>
